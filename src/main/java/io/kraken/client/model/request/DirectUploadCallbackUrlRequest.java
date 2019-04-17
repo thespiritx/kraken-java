@@ -24,7 +24,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Set;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+
 
 /**
  * @author Emir Dizdarevic
@@ -46,7 +46,7 @@ public class DirectUploadCallbackUrlRequest extends AbstractUploadCallbackUrlReq
                                            InputStream image) {
         super(dev, webp, lossy, quality, resize, preserveMeta, convert, callbackUrl);
 
-        checkNotNull(image, "image must not be null");
+        //checkNotNull(image, "image must not be null");
         this.image = image;
     }
 

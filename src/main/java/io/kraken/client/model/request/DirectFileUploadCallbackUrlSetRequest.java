@@ -24,7 +24,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.Set;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+
 
 /**
  * @author Emir Dizdarevic
@@ -46,7 +46,7 @@ public class DirectFileUploadCallbackUrlSetRequest extends AbstractUploadCallbac
                                                File image) {
         super(dev, webp, lossy, quality, resize, preserveMeta, convert, callbackUrl);
 
-        checkNotNull(image, "image must not be null");
+        //checkNotNull(image, "image must not be null");
         this.image = image;
     }
 

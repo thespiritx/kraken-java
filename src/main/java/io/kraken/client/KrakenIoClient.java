@@ -15,9 +15,22 @@
  */
 package io.kraken.client;
 
-import io.kraken.client.model.request.*;
+import io.kraken.client.model.request.DirectFileUploadCallbackUrlRequest;
+import io.kraken.client.model.request.DirectFileUploadCallbackUrlSetRequest;
+import io.kraken.client.model.request.DirectFileUploadRequest;
+import io.kraken.client.model.request.DirectFileUploadSetRequest;
+import io.kraken.client.model.request.DirectUploadCallbackUrlRequest;
+import io.kraken.client.model.request.DirectUploadCallbackUrlSetRequest;
+import io.kraken.client.model.request.DirectUploadRequest;
+import io.kraken.client.model.request.DirectUploadSetRequest;
+import io.kraken.client.model.request.ImageUrlUploadCallbackUrlRequest;
+import io.kraken.client.model.request.ImageUrlUploadCallbackUrlSetRequest;
+import io.kraken.client.model.request.ImageUrlUploadRequest;
+import io.kraken.client.model.request.ImageUrlUploadSetRequest;
 import io.kraken.client.model.response.SuccessfulUploadCallbackUrlResponse;
+import io.kraken.client.model.response.SuccessfulUploadCallbackUrlSetResponse;
 import io.kraken.client.model.response.SuccessfulUploadResponse;
+import io.kraken.client.model.response.SuccessfulUploadSetResponse;
 
 /**
  * @author Emir Dizdarevic
@@ -25,10 +38,16 @@ import io.kraken.client.model.response.SuccessfulUploadResponse;
  */
 public interface KrakenIoClient {
     SuccessfulUploadResponse directUpload(DirectUploadRequest directUploadRequest);
+    SuccessfulUploadSetResponse directUpload(DirectUploadSetRequest directUploadSetRequest);
     SuccessfulUploadResponse directUpload(DirectFileUploadRequest directFileUploadRequest);
+    SuccessfulUploadSetResponse directUpload(DirectFileUploadSetRequest directFileUploadSetRequest);
     SuccessfulUploadResponse imageUrlUpload(ImageUrlUploadRequest imageUrlUploadRequest);
+    SuccessfulUploadSetResponse imageUrlUpload(ImageUrlUploadSetRequest imageUrlUploadSetRequest);
 
     SuccessfulUploadCallbackUrlResponse directUpload(DirectUploadCallbackUrlRequest directUploadCallbackUrlRequest);
+    SuccessfulUploadCallbackUrlSetResponse directUpload(DirectUploadCallbackUrlSetRequest directUploadCallbackUrlSetRequest);
     SuccessfulUploadCallbackUrlResponse directUpload(DirectFileUploadCallbackUrlRequest directFileUploadCallbackUrlRequest);
+    SuccessfulUploadCallbackUrlSetResponse directUpload(DirectFileUploadCallbackUrlSetRequest directFileUploadCallbackUrlSetRequest);
     SuccessfulUploadCallbackUrlResponse imageUrlUpload(ImageUrlUploadCallbackUrlRequest imageUrlUploadCallbackUrlRequest);
+    SuccessfulUploadCallbackUrlSetResponse imageUrlUpload(ImageUrlUploadCallbackUrlSetRequest imageUrlUploadCallbackUrlSetRequest);
 }

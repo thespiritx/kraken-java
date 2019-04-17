@@ -15,46 +15,57 @@
  */
 package io.kraken.client.impl;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.Resources;
+import static net.javacrumbs.jsonunit.JsonMatchers.jsonEquals;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThat;
+import static org.mockserver.model.HttpRequest.request;
+import static org.mockserver.model.HttpResponse.response;
 import io.kraken.client.AbstractFunctionalTest;
 import io.kraken.client.KrakenIoClient;
 import io.kraken.client.exception.KrakenIoException;
 import io.kraken.client.exception.KrakenIoRequestException;
 import io.kraken.client.model.RGBA;
-import io.kraken.client.model.request.*;
+import io.kraken.client.model.request.DirectFileUploadRequest;
+import io.kraken.client.model.request.DirectUploadCallbackUrlRequest;
+import io.kraken.client.model.request.DirectUploadRequest;
+import io.kraken.client.model.request.ImageUrlUploadCallbackUrlRequest;
+import io.kraken.client.model.request.ImageUrlUploadRequest;
 import io.kraken.client.model.resize.FillResize;
 import io.kraken.client.model.response.SuccessfulUploadCallbackUrlResponse;
 import io.kraken.client.model.response.SuccessfulUploadResponse;
-import org.apache.commons.fileupload.MultipartStream;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockserver.mock.Expectation;
-import org.mockserver.model.Header;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static net.javacrumbs.jsonunit.JsonMatchers.jsonEquals;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThat;
-import static org.mockserver.model.HttpRequest.request;
-import static org.mockserver.model.HttpResponse.response;
+import org.apache.commons.fileupload.MultipartStream;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockserver.mock.Expectation;
+import org.mockserver.model.Header;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Emir Dizdarevic
  * @since 1.0.0
  */
 public class DefaultKrakenIoClientFunctionalTest extends AbstractFunctionalTest {
+	
+	private static final Logger log = LoggerFactory.getLogger(DefaultKrakenIoClientFunctionalTest.class);
 
-    private static final Pattern MULTIPART_BOUNDARY_PATTERN = Pattern.compile("multipart/form-data;boundary=(.*)");
+    private static final Pattern MULTIPART_BOUNDARY_PATTERN = Pattern.compile("multipart/form-data;\\s*boundary=(.*)");
 
     private KrakenIoClient krakenIoClient;
 
@@ -75,7 +86,7 @@ public class DefaultKrakenIoClientFunctionalTest extends AbstractFunctionalTest 
         final DirectUploadRequest directUploadRequest = DirectUploadRequest.builder(new ByteArrayInputStream(loadFileBinary("test.jpg"))).withResize(fillResize).build();
         internalTestDirectUpload(directUploadRequest, loadFileString("krakenIoRequestDirectResize.json"));
     }
-
+      
     private void internalTestDirectUpload(DirectUploadRequest directUploadRequest, String requestJson) throws Exception {
         getMockServerClient()
                 .when(
@@ -91,6 +102,7 @@ public class DefaultKrakenIoClientFunctionalTest extends AbstractFunctionalTest 
                 );
 
         final SuccessfulUploadResponse successfulUploadResponse = krakenIoClient.directUpload(directUploadRequest);
+
         assertThat(successfulUploadResponse.getStatus(), is(200));
         assertThat(successfulUploadResponse.getSuccess(), is(true));
         assertThat(successfulUploadResponse.getFileName(), is("header.jpg"));
@@ -120,26 +132,27 @@ public class DefaultKrakenIoClientFunctionalTest extends AbstractFunctionalTest 
         final String imageHeaders = multipartStream.readHeaders();
         multipartStream.readBodyData(image);
         multipartStream.readBoundary();
-
+        
         assertThat(requestHeaders, containsString("Content-Type: application/json"));
         assertThat(imageHeaders, containsString("filename="));
         assertThat(image.toByteArray(), is(loadFileBinary("test.jpg")));
-        assertThat(new String(request.toByteArray(), Charsets.UTF_8), jsonEquals(requestJson));
+        assertThat(new String(request.toByteArray(), "UTF-8"), jsonEquals(requestJson));
+        
     }
-
+    
     @Test
     public void testDirectFileUploadSimple() throws Exception {
-        final DirectFileUploadRequest directFileUploadRequest = DirectFileUploadRequest.builder(new File(Resources.getResource(DefaultKrakenIoClientFunctionalTest.class, "test.jpg").toURI())).build();
+        final DirectFileUploadRequest directFileUploadRequest = DirectFileUploadRequest.builder(new File(getResource("test.jpg").getPath())).build();
         internalTestDirectFileUpload(directFileUploadRequest, loadFileString("krakenIoRequestDirectSimple.json"));
     }
 
     @Test
     public void testDirectFileUploadResize() throws Exception {
         final FillResize fillResize = new FillResize(150, 150, new RGBA(100, 100, 100, BigDecimal.ONE));
-        final DirectFileUploadRequest directFileUploadRequest = DirectFileUploadRequest.builder(new File(Resources.getResource(DefaultKrakenIoClientFunctionalTest.class, "test.jpg").toURI())).withResize(fillResize).build();
+        final DirectFileUploadRequest directFileUploadRequest = DirectFileUploadRequest.builder(new File(getResource("test.jpg").getPath())).withResize(fillResize).build();
         internalTestDirectFileUpload(directFileUploadRequest, loadFileString("krakenIoRequestDirectResize.json"));
     }
-
+    
     private void internalTestDirectFileUpload(DirectFileUploadRequest directFileUploadRequest, String requestJson) throws Exception {
         getMockServerClient()
                 .when(
@@ -188,9 +201,8 @@ public class DefaultKrakenIoClientFunctionalTest extends AbstractFunctionalTest 
         assertThat(imageHeaders, containsString("filename=\"test.jpg\""));
         assertThat(imageHeaders, containsString("Content-Type: image/jpeg"));
         assertThat(image.toByteArray(), is(loadFileBinary("test.jpg")));
-        assertThat(new String(request.toByteArray(), Charsets.UTF_8), jsonEquals(requestJson));
+        assertThat(new String(request.toByteArray(), "UTF-8"), jsonEquals(requestJson));
     }
-
     @Test
     public void testDirectUploadCallbackUrlSimple() throws Exception {
         final DirectUploadCallbackUrlRequest directUploadCallbackUrlRequest = DirectUploadCallbackUrlRequest.builder(new ByteArrayInputStream(loadFileBinary("test.jpg")), new URL("http://somehost/somecallback")).build();
@@ -203,7 +215,7 @@ public class DefaultKrakenIoClientFunctionalTest extends AbstractFunctionalTest 
         final DirectUploadCallbackUrlRequest directUploadCallbackUrlRequest = DirectUploadCallbackUrlRequest.builder(new ByteArrayInputStream(loadFileBinary("test.jpg")), new URL("http://somehost/somecallback")).withResize(fillResize).build();
         internalTestDirectUploadCallbackUrl(directUploadCallbackUrlRequest, loadFileString("krakenIoRequestDirectCallbackUrlResize.json"));
     }
-
+	
     private void internalTestDirectUploadCallbackUrl(DirectUploadCallbackUrlRequest directUploadCallbackUrlRequest, String requestJson) throws Exception {
         getMockServerClient()
                 .when(
@@ -246,15 +258,14 @@ public class DefaultKrakenIoClientFunctionalTest extends AbstractFunctionalTest 
         assertThat(requestHeaders, containsString("Content-Type: application/json"));
         assertThat(imageHeaders, containsString("filename="));
         assertThat(image.toByteArray(), is(loadFileBinary("test.jpg")));
-        assertThat(new String(request.toByteArray(), Charsets.UTF_8), jsonEquals(requestJson));
+        assertThat(new String(request.toByteArray(), "UTF-8"), jsonEquals(requestJson));
     }
-
+    
     @Test
     public void testImageUrlUploadSimple() throws Exception {
         final ImageUrlUploadRequest imageUrlUploadRequest = ImageUrlUploadRequest.builder(new URL("http://somehost/image")).build();
         internalTestImageUrlUpload(imageUrlUploadRequest, loadFileString("krakenIoRequestImageUrlSimple.json"));
     }
-
     @Test
     public void testImageUrlUploadResize() throws Exception {
         final FillResize fillResize = new FillResize(150, 150, new RGBA(100, 100, 100, BigDecimal.ONE));
@@ -267,7 +278,7 @@ public class DefaultKrakenIoClientFunctionalTest extends AbstractFunctionalTest 
                 .when(
                         request()
                                 .withPath("/v1/url")
-                                .withHeader(new Header("Content-Type", "application/json"))
+                                .withHeader(new Header("Content-Type", "application/json; charset=UTF-8"))
                 )
                 .respond(
                         response()
@@ -288,12 +299,12 @@ public class DefaultKrakenIoClientFunctionalTest extends AbstractFunctionalTest 
         final Expectation[] expectations = getMockServerClient().retrieveAsExpectations(
                 request()
                         .withPath("/v1/url")
-                        .withHeader(new Header("Content-Type", "application/json"))
+                        .withHeader(new Header("Content-Type", "application/json; charset=UTF-8"))
         );
 
         assertThat(Arrays.asList(expectations), hasSize(1));
-        assertThat(expectations[0].getHttpRequest().getFirstHeader("Content-Type"), is("application/json"));
-        assertThat(new String(expectations[0].getHttpRequest().getBody().getRawBytes(), Charsets.UTF_8), jsonEquals(requestJson));
+        assertThat(expectations[0].getHttpRequest().getFirstHeader("Content-Type"), is("application/json; charset=UTF-8"));
+        assertThat(new String(expectations[0].getHttpRequest().getBody().getRawBytes(), "UTF-8"), jsonEquals(requestJson));
     }
 
     @Test
@@ -319,7 +330,7 @@ public class DefaultKrakenIoClientFunctionalTest extends AbstractFunctionalTest 
                 .when(
                         request()
                                 .withPath("/v1/url")
-                                .withHeader(new Header("Content-Type", "application/json"))
+                                .withHeader(new Header("Content-Type", "application/json; charset=UTF-8"))
                 )
                 .respond(
                         response()
@@ -334,21 +345,21 @@ public class DefaultKrakenIoClientFunctionalTest extends AbstractFunctionalTest 
         final Expectation[] expectations = getMockServerClient().retrieveAsExpectations(
                 request()
                         .withPath("/v1/url")
-                        .withHeader(new Header("Content-Type", "application/json"))
+                        .withHeader(new Header("Content-Type", "application/json; charset=UTF-8"))
         );
 
         assertThat(Arrays.asList(expectations), hasSize(1));
-        assertThat(expectations[0].getHttpRequest().getFirstHeader("Content-Type"), is("application/json"));
-        assertThat(new String(expectations[0].getHttpRequest().getBody().getRawBytes(), Charsets.UTF_8), jsonEquals(requestJson));
+        assertThat(expectations[0].getHttpRequest().getFirstHeader("Content-Type"), is("application/json; charset=UTF-8"));
+        assertThat(new String(expectations[0].getHttpRequest().getBody().getRawBytes(), "UTF-8"), jsonEquals(requestJson));
     }
-
+    
     @Test
     public void testImageUrlUploadCallbackUrl_400() throws Exception {
         getMockServerClient()
                 .when(
                         request()
                                 .withPath("/v1/url")
-                                .withHeader(new Header("Content-Type", "application/json"))
+                                .withHeader(new Header("Content-Type", "application/json; charset=UTF-8"))
                 )
                 .respond(
                         response()
@@ -371,7 +382,7 @@ public class DefaultKrakenIoClientFunctionalTest extends AbstractFunctionalTest 
                 .when(
                         request()
                                 .withPath("/v1/url")
-                                .withHeader(new Header("Content-Type", "application/json"))
+                                .withHeader(new Header("Content-Type", "application/json; charset=UTF-8"))
                 )
                 .respond(
                         response()
@@ -394,7 +405,7 @@ public class DefaultKrakenIoClientFunctionalTest extends AbstractFunctionalTest 
                 .when(
                         request()
                                 .withPath("/v1/url")
-                                .withHeader(new Header("Content-Type", "application/json"))
+                                .withHeader(new Header("Content-Type", "application/json; charset=UTF-8"))
                 )
                 .respond(
                         response()
@@ -417,7 +428,7 @@ public class DefaultKrakenIoClientFunctionalTest extends AbstractFunctionalTest 
                 .when(
                         request()
                                 .withPath("/v1/url")
-                                .withHeader(new Header("Content-Type", "application/json"))
+                                .withHeader(new Header("Content-Type", "application/json; charset=UTF-8"))
                 )
                 .respond(
                         response()
@@ -440,7 +451,7 @@ public class DefaultKrakenIoClientFunctionalTest extends AbstractFunctionalTest 
                 .when(
                         request()
                                 .withPath("/v1/url")
-                                .withHeader(new Header("Content-Type", "application/json"))
+                                .withHeader(new Header("Content-Type", "application/json; charset=UTF-8"))
                 )
                 .respond(
                         response()
@@ -463,7 +474,7 @@ public class DefaultKrakenIoClientFunctionalTest extends AbstractFunctionalTest 
                 .when(
                         request()
                                 .withPath("/v1/url")
-                                .withHeader(new Header("Content-Type", "application/json"))
+                                .withHeader(new Header("Content-Type", "application/json; charset=UTF-8"))
                 )
                 .respond(
                         response()
@@ -486,7 +497,7 @@ public class DefaultKrakenIoClientFunctionalTest extends AbstractFunctionalTest 
                 .when(
                         request()
                                 .withPath("/v1/url")
-                                .withHeader(new Header("Content-Type", "application/json"))
+                                .withHeader(new Header("Content-Type", "application/json; charset=UTF-8"))
                 )
                 .respond(
                         response()
@@ -509,7 +520,7 @@ public class DefaultKrakenIoClientFunctionalTest extends AbstractFunctionalTest 
                 .when(
                         request()
                                 .withPath("/v1/url")
-                                .withHeader(new Header("Content-Type", "application/json"))
+                                .withHeader(new Header("Content-Type", "application/json; charset=UTF-8"))
                 )
                 .respond(
                         response()
@@ -531,7 +542,11 @@ public class DefaultKrakenIoClientFunctionalTest extends AbstractFunctionalTest 
                 .when(
                         request()
                                 .withPath("/v1/url")
-                                .withHeader(new Header("Content-Type", "application/json"))
+                                .withHeader(new Header("Content-Type", "application/json; charset=UTF-8"))
+                                .withHeader(new Header("Content-Length", "137"))
+                                .withHeader(new Header("Host", "localhost:1080"))
+                                .withHeader(new Header("User-Agent", "Apache-HttpClient/4.5.7 (Java/1.8.0_77)"))
+                                .withHeader(new Header("Accept-Encoding", "gzip,deflate"))
                 )
                 .respond(
                         response()
@@ -554,7 +569,11 @@ public class DefaultKrakenIoClientFunctionalTest extends AbstractFunctionalTest 
                 .when(
                         request()
                                 .withPath("/v1/url")
-                                .withHeader(new Header("Content-Type", "application/json"))
+                                .withHeader(new Header("Content-Type", "application/json; charset=UTF-8"))
+                                .withHeader(new Header("Content-Length", "137"))
+                                .withHeader(new Header("Host", "localhost:1080"))
+                                .withHeader(new Header("User-Agent", "Apache-HttpClient/4.5.7 (Java/1.8.0_77)"))
+                                .withHeader(new Header("Accept-Encoding", "gzip,deflate"))
                 )
                 .respond(
                         response()
@@ -577,7 +596,11 @@ public class DefaultKrakenIoClientFunctionalTest extends AbstractFunctionalTest 
                 .when(
                         request()
                                 .withPath("/v1/url")
-                                .withHeader(new Header("Content-Type", "application/json"))
+                                .withHeader(new Header("Content-Type", "application/json; charset=UTF-8"))
+                                .withHeader(new Header("Content-Length", "137"))
+                                .withHeader(new Header("Host", "localhost:1080"))
+                                .withHeader(new Header("User-Agent", "Apache-HttpClient/4.5.7 (Java/1.8.0_77)"))
+                                .withHeader(new Header("Accept-Encoding", "gzip,deflate"))
                 )
                 .respond(
                         response()
@@ -600,7 +623,11 @@ public class DefaultKrakenIoClientFunctionalTest extends AbstractFunctionalTest 
                 .when(
                         request()
                                 .withPath("/v1/url")
-                                .withHeader(new Header("Content-Type", "application/json"))
+                                .withHeader(new Header("Content-Type", "application/json; charset=UTF-8"))
+                                .withHeader(new Header("Content-Length", "137"))
+                                .withHeader(new Header("Host", "localhost:1080"))
+                                .withHeader(new Header("User-Agent", "Apache-HttpClient/4.5.7 (Java/1.8.0_77)"))
+                                .withHeader(new Header("Accept-Encoding", "gzip,deflate"))
                 )
                 .respond(
                         response()
@@ -623,7 +650,11 @@ public class DefaultKrakenIoClientFunctionalTest extends AbstractFunctionalTest 
                 .when(
                         request()
                                 .withPath("/v1/url")
-                                .withHeader(new Header("Content-Type", "application/json"))
+                                .withHeader(new Header("Content-Type", "application/json; charset=UTF-8"))
+                                .withHeader(new Header("Content-Length", "137"))
+                                .withHeader(new Header("Host", "localhost:1080"))
+                                .withHeader(new Header("User-Agent", "Apache-HttpClient/4.5.7 (Java/1.8.0_77)"))
+                                .withHeader(new Header("Accept-Encoding", "gzip,deflate"))
                 )
                 .respond(
                         response()
@@ -646,7 +677,11 @@ public class DefaultKrakenIoClientFunctionalTest extends AbstractFunctionalTest 
                 .when(
                         request()
                                 .withPath("/v1/url")
-                                .withHeader(new Header("Content-Type", "application/json"))
+                                .withHeader(new Header("Content-Type", "application/json; charset=UTF-8"))
+                                .withHeader(new Header("Content-Length", "137"))
+                                .withHeader(new Header("Host", "localhost:1080"))
+                                .withHeader(new Header("User-Agent", "Apache-HttpClient/4.5.7 (Java/1.8.0_77)"))
+                                .withHeader(new Header("Accept-Encoding", "gzip,deflate"))
                 )
                 .respond(
                         response()
@@ -669,7 +704,11 @@ public class DefaultKrakenIoClientFunctionalTest extends AbstractFunctionalTest 
                 .when(
                         request()
                                 .withPath("/v1/url")
-                                .withHeader(new Header("Content-Type", "application/json"))
+                                .withHeader(new Header("Content-Type", "application/json; charset=UTF-8"))
+                                .withHeader(new Header("Content-Length", "137"))
+                                .withHeader(new Header("Host", "localhost:1080"))
+                                .withHeader(new Header("User-Agent", "Apache-HttpClient/4.5.7 (Java/1.8.0_77)"))
+                                .withHeader(new Header("Accept-Encoding", "gzip,deflate"))
                 )
                 .respond(
                         response()
@@ -692,7 +731,11 @@ public class DefaultKrakenIoClientFunctionalTest extends AbstractFunctionalTest 
                 .when(
                         request()
                                 .withPath("/v1/url")
-                                .withHeader(new Header("Content-Type", "application/json"))
+                                .withHeader(new Header("Content-Type", "application/json; charset=UTF-8"))
+                                .withHeader(new Header("Content-Length", "137"))
+                                .withHeader(new Header("Host", "localhost:1080"))
+                                .withHeader(new Header("User-Agent", "Apache-HttpClient/4.5.7 (Java/1.8.0_77)"))
+                                .withHeader(new Header("Accept-Encoding", "gzip,deflate"))
                 )
                 .respond(
                         response()
@@ -710,16 +753,43 @@ public class DefaultKrakenIoClientFunctionalTest extends AbstractFunctionalTest 
 
     private byte[] getMultipartBoundary(Expectation expectation) {
         final String contentType = expectation.getHttpRequest().getFirstHeader("Content-Type");
+        log.info(contentType);
         final Matcher matcher = MULTIPART_BOUNDARY_PATTERN.matcher(contentType);
         matcher.matches();
         return matcher.group(1).getBytes();
     }
 
     private String loadFileString(String fileName) throws IOException {
-        return Resources.toString(Resources.getResource(DefaultKrakenIoClientFunctionalTest.class, fileName), Charsets.UTF_8);
+    	byte[] bytes = loadFileBinary(fileName);
+    	String returnString = new String(bytes);
+    	log.info(returnString);
+        return returnString;
     }
 
     private byte[] loadFileBinary(String fileName) throws IOException {
-        return Resources.toByteArray(Resources.getResource(DefaultKrakenIoClientFunctionalTest.class, fileName));
+    	URL url = getResource(fileName);
+    	ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    	InputStream is = null;
+    	try {
+    	  is = url.openStream ();
+    	  byte[] byteChunk = new byte[4096]; // Or whatever size you want to read in at a time.
+    	  int n;
+
+    	  while ( (n = is.read(byteChunk)) > 0 ) {
+    	    baos.write(byteChunk, 0, n);
+    	  }
+    	}
+    	catch (IOException e) {
+    	  System.err.printf ("Failed while reading bytes from %s: %s", url.toExternalForm(), e.getMessage());
+    	  e.printStackTrace ();
+    	}
+    	finally {
+    	  if (is != null) { is.close(); }
+    	}
+        return baos.toByteArray();
+    }
+    
+    private URL getResource(String fileName){
+    	return this.getClass().getResource(fileName);
     }
 }

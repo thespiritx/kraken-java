@@ -7,8 +7,8 @@
     </parent>
     <groupId>io.kraken.client</groupId>
     <artifactId>client</artifactId>
-    <version>1.1.1-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <version>1.1.2-SNAPSHOT</version>
+    <packaging>${packaging.type}</packaging>
     <inceptionYear>2015</inceptionYear>
 
     <name>Kraken.io REST client</name>
@@ -30,12 +30,13 @@
     </developers>
 
     <properties>
+    	<packaging.type>jar</packaging.type>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.6</java.version>
         <arguments />
 
         <jersey.version>2.25</jersey.version>
-        <jackson.version>2.8.6</jackson.version>
+        <jackson.version>2.8.4</jackson.version>
         <guava.version>18.0</guava.version>
         <findbugs.version>3.0.0</findbugs.version>
         <slf4j.version>1.7.23</slf4j.version>
@@ -62,6 +63,7 @@
     </properties>
 
     <dependencies>
+    
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
@@ -78,74 +80,31 @@
             <version>[${jackson.version}]</version>
         </dependency>
         <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>${guava.version}</version>
+            <groupId>com.fasterxml.jackson.jaxrs</groupId>
+            <artifactId>jackson-jaxrs-json-provider</artifactId>
+            <version>${jackson.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>jsr305</artifactId>
-            <version>${findbugs.version}</version>
-        </dependency>
-
-        <!-- Logging -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <version>${log4j2.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>${log4j2.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-1.2-api</artifactId>
-            <version>${log4j2.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-slf4j-impl</artifactId>
-            <version>${log4j2.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jcl-over-slf4j</artifactId>
-            <version>${slf4j.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jul-to-slf4j</artifactId>
-            <version>${slf4j.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.glassfish.jersey.core</groupId>
-            <artifactId>jersey-client</artifactId>
-            <version>${jersey.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jersey.media</groupId>
-            <artifactId>jersey-media-multipart</artifactId>
-            <version>${jersey.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.jaxrs</groupId>
-            <artifactId>jackson-jaxrs-json-provider</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
+		<dependency>
+		    <groupId>commons-io</groupId>
+		    <artifactId>commons-io</artifactId>
+		    <version>1.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.5.7</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.apache.httpcomponents</groupId>
+		    <artifactId>httpmime</artifactId>
+		    <version>4.5.7</version>
+		</dependency>
+        
 
         <!-- Test dependencies -->
         <dependency>
@@ -183,7 +142,7 @@
             <artifactId>hamcrest-all</artifactId>
             <version>${hemcrest.version}</version>
             <scope>test</scope>
-        </dependency>
+        </dependency>        
         <dependency>
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
@@ -196,6 +155,43 @@
     		<version>1.18.0</version>
     		<scope>test</scope>
 		</dependency>
+		<dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>${log4j2.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>${log4j2.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-1.2-api</artifactId>
+            <version>${log4j2.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+            <version>${log4j2.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jul-to-slf4j</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>test</scope>
+        </dependency>
+        		
     </dependencies>
 
     <build>
@@ -326,6 +322,69 @@
                     </plugin>
                 </plugins>
             </build>
+        </profile>
+        <profile>
+        	<id>bundle</id>
+        	<properties>
+        		<packaging.type>bundle</packaging.type>
+        	</properties>
+        	<dependencies>
+        		<dependency>
+	                <groupId>org.osgi</groupId>
+	                <artifactId>osgi.core</artifactId>
+	                <version>6.0.0</version>
+	                <scope>provided</scope>
+	            </dependency>
+	            <dependency>
+	                <groupId>org.osgi</groupId>
+	                <artifactId>osgi.cmpn</artifactId>
+	                <version>6.0.0</version>
+	                <scope>provided</scope>
+	            </dependency>
+	            <dependency>
+	                <groupId>org.osgi</groupId>
+	                <artifactId>osgi.annotation</artifactId>
+	                <version>6.0.1</version>
+	                <scope>provided</scope>
+	            </dependency>
+        		<dependency>
+				    <groupId>org.apache.felix</groupId>
+				    <artifactId>org.apache.felix.scr.annotations</artifactId>
+				    <version>1.12.0</version>
+				</dependency>	
+        	</dependencies>
+        	<build>
+        		<plugins>
+		        	<plugin>
+		                <groupId>org.apache.felix</groupId>
+		                <artifactId>maven-scr-plugin</artifactId>
+		                <version>1.16.0</version>
+		
+		                <executions>
+		                    <execution>
+		                        <id>generate-scr-descriptor</id>
+		
+		                        <goals>
+		                            <goal>scr</goal>
+		                        </goals>
+		                    </execution>
+		                </executions>
+		            </plugin>
+       				<plugin>
+		                <groupId>org.apache.felix</groupId>
+		                <artifactId>maven-bundle-plugin</artifactId>
+		                <extensions>true</extensions>
+		                <version>2.3.6</version>
+		                <configuration>
+		                    <instructions>
+		                        <Export-Package>
+		                            io.kraken.client.*
+		                        </Export-Package>
+		                    </instructions>
+		                </configuration>
+		            </plugin>
+        		</plugins>
+        	</build>
         </profile>
     </profiles>
 

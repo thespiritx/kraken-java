@@ -15,7 +15,6 @@
  */
 package io.kraken.client.model.request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import io.kraken.client.model.Convert;
 import io.kraken.client.model.Metadata;
 import io.kraken.client.model.resize.AbstractResize;
@@ -23,7 +22,7 @@ import io.kraken.client.model.resize.AbstractResize;
 import java.net.URL;
 import java.util.Set;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * @author Emir Dizdarevic
@@ -44,7 +43,7 @@ public abstract class AbstractUploadCallbackUrlRequest extends AbstractUploadReq
                                                URL callbackUrl) {
         super(dev, false, webp, lossy, quality, resize, preserveMeta, convert);
 
-        checkNotNull(callbackUrl, "callbackUrl must not be null");
+        //checkNotNull(callbackUrl, "callbackUrl must not be null");
         this.callbackUrl = callbackUrl;
     }
 

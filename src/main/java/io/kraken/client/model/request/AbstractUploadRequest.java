@@ -24,8 +24,7 @@ import io.kraken.client.model.resize.AbstractResize;
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
+
 
 /**
  * @author Emir Dizdarevic
@@ -52,11 +51,11 @@ public abstract class AbstractUploadRequest {
                                     AbstractResize resize,
                                     Set<Metadata> preserveMeta,
                                     Convert convert) {
-        checkNotNull(dev, "dev must not be null");
-        checkNotNull(wait, "wait must not be null");
-        checkNotNull(lossy, "lossy must not be null");
-        checkArgument(quality == null || (quality != null && quality >= 1 && quality <= 100), "quality must be between 1-100");
-        checkArgument(lossy != null || (lossy == null && quality == null), "quality can only be set if lossy is set");
+        //checkNotNull(dev, "dev must not be null");
+        //checkNotNull(wait, "wait must not be null");
+        //checkNotNull(lossy, "lossy must not be null");
+        //checkArgument(quality == null || (quality != null && quality >= 1 && quality <= 100), "quality must be between 1-100");
+        //checkArgument(lossy != null || (lossy == null && quality == null), "quality can only be set if lossy is set");
 
         this.dev = dev;
         this.wait = wait;

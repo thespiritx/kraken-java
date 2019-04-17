@@ -23,7 +23,7 @@ import io.kraken.client.model.resize.AbstractResize;
 import java.io.File;
 import java.util.Set;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+
 
 /**
  * @author Emir Dizdarevic
@@ -44,7 +44,7 @@ public class DirectFileUploadSetRequest extends AbstractUploadSetRequest {
                                     File image) {
         super(dev, true, webp, lossy, quality, resize, preserveMeta, convert);
 
-        checkNotNull(image, "image must not be null");
+        //checkNotNull(image, "image must not be null");
         this.image = image;
     }
 

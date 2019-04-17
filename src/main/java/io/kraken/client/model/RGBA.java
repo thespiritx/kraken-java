@@ -20,8 +20,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.math.BigDecimal;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * @author Emir Dizdarevic
@@ -39,14 +37,14 @@ public class RGBA {
                 @JsonProperty("green") Integer green,
                 @JsonProperty("blue") Integer blue,
                 @JsonProperty("alpha") BigDecimal alpha) {
-        checkNotNull(red, "red must not be null");
-        checkNotNull(green, "green must not be null");
-        checkNotNull(blue, "blue must not be null");
-        checkNotNull(alpha, "alpha must not be null");
-        checkArgument(red >= 0 && red <= 256, "red must be between 0-256");
-        checkArgument(green >= 0 && green <= 256, "green must be between 0-256");
-        checkArgument(blue >= 0 && blue <= 256, "blue must be between 0-256");
-        checkArgument(alpha.compareTo(BigDecimal.valueOf(0.0)) > -1 && alpha.compareTo(BigDecimal.valueOf(1.0)) < 1, "red must be between 0-1");
+        //checkNotNull(red, "red must not be null");
+        //checkNotNull(green, "green must not be null");
+        //checkNotNull(blue, "blue must not be null");
+        //checkNotNull(alpha, "alpha must not be null");
+        //checkArgument(red >= 0 && red <= 256, "red must be between 0-256");
+        //checkArgument(green >= 0 && green <= 256, "green must be between 0-256");
+        //checkArgument(blue >= 0 && blue <= 256, "blue must be between 0-256");
+        //checkArgument(alpha.compareTo(BigDecimal.valueOf(0.0)) > -1 && alpha.compareTo(BigDecimal.valueOf(1.0)) < 1, "red must be between 0-1");
 
         this.red = red;
         this.green = green;

@@ -19,7 +19,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.kraken.client.model.Strategy;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+
 
 /**
  * @author Emir Dizdarevic
@@ -33,7 +33,7 @@ public class LandscapeResize extends AbstractResize {
     public LandscapeResize(@JsonProperty("width") Integer width) {
         super(Strategy.LANDSCAPE);
 
-        checkNotNull(width, "width must not be null");
+        //checkNotNull(width, "width must not be null");
         this.width = width;
     }
 

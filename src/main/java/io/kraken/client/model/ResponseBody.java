@@ -13,31 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.kraken.client.model.resize;
-
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import io.kraken.client.model.Strategy;
-
-
+package io.kraken.client.model;
 
 /**
- * @author Emir Dizdarevic
- * @since 1.0.0
+ * @author Clinton LaForest
+ * @since 1.1.2
  */
-public class PortraitResize extends AbstractResize {
+public class ResponseBody {
 
-    private final Integer height;
-
-    @JsonCreator
-    public PortraitResize(@JsonProperty("height") Integer height) {
-        super(Strategy.PORTRAIT);
-
-        //checkNotNull(height, "height must not be null");
-        this.height = height;
-    }
-
-    public Integer getHeight() {
-        return height;
-    }
+	private int code;
+	private String reason;
+	private String body;
+	
+	public int getCode() {
+		return code;
+	}
+	public void setCode(int code) {
+		this.code = code;
+	}
+	
+	public String getReason() {
+		return reason;
+	}
+	public void setReason(String reason) {
+		this.reason = reason;
+	}
+	
+	public String getBody() {
+		return body;
+	}
+	public void setBody(String body) {
+		this.body = body;
+	}
+	
 }

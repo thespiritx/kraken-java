@@ -4,13 +4,19 @@
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS zzz} [%t] %-5level %logger{36} - %msg%n"/>
         </Console>
+        <File name="MyFile" fileName="logs/app.log">
+	      <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS zzz} [%t] %-5level %logger{36} - %msg%n"/>
+	    </File>
     </Appenders>
     <Loggers>
         <Logger name="io.kraken.client.impl.DefaultKrakenIoClient" level="DEBUG" additivity="false">
+            <AppenderRef ref="MyFile"/>
+        </Logger>
+        <Logger name="org.mockserver.client.netty.NettyHttpClient" level="ERROR" additivity="false">
             <AppenderRef ref="Console"/>
         </Logger>
-        <Root level="WARN" includeLocation="true">
-            <AppenderRef ref="Console"/>
+        <Root level="DEBUG" includeLocation="true">
+            <AppenderRef ref="MyFile"/>
         </Root>
     </Loggers>
 </Configuration>

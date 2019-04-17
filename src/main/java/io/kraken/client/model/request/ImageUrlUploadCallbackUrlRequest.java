@@ -23,7 +23,7 @@ import io.kraken.client.model.resize.AbstractResize;
 import java.net.URL;
 import java.util.Set;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+
 
 /**
  * @author Emir Dizdarevic
@@ -45,7 +45,7 @@ public class ImageUrlUploadCallbackUrlRequest extends AbstractUploadCallbackUrlR
                                              URL imageUrl) {
         super(dev, webp, lossy, quality, resize, preserveMeta, convert, callbackUrl);
 
-        checkNotNull(imageUrl, "imageUrl must not be null");
+        //checkNotNull(imageUrl, "imageUrl must not be null");
         this.imageUrl = imageUrl;
     }
 

@@ -15,16 +15,13 @@
  */
 package io.kraken.client.model.resize;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.kraken.client.model.RGBA;
 import io.kraken.client.model.Strategy;
 import io.kraken.client.serializer.RGBASerializer;
 
-import javax.annotation.Nullable;
-
-import static com.google.common.base.Preconditions.checkNotNull;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * @author Emir Dizdarevic
@@ -38,7 +35,7 @@ public class FillResize extends AbstractDimensionBasedResize {
     @JsonCreator
     public FillResize(@JsonProperty("width") Integer width,
                       @JsonProperty("height") Integer height,
-                      @Nullable @JsonProperty("background") RGBA background) {
+                      @JsonProperty("background") RGBA background) {
         super(Strategy.FILL, width, height);
         this.background = background;
     }
