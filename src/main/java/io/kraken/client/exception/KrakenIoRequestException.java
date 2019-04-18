@@ -16,6 +16,7 @@
 package io.kraken.client.exception;
 
 import io.kraken.client.model.response.FailedUploadResponse;
+import io.kraken.client.model.response.FailedUploadSetResponse;
 
 /**
  * @author Emir Dizdarevic
@@ -34,8 +35,24 @@ public class KrakenIoRequestException extends KrakenIoException {
         super(message, cause);
         this.failedUploadResponse = failedUploadResponse;
     }
+    
+    public KrakenIoRequestException(String message, FailedUploadSetResponse failedUploadResponse) {
+        super(message);
+        this.failedUploadResponse = transform(failedUploadResponse);
+    }
+
+    public KrakenIoRequestException(String message, Throwable cause, FailedUploadSetResponse failedUploadResponse) {
+        super(message, cause);
+        this.failedUploadResponse = transform(failedUploadResponse);
+    }
 
     public FailedUploadResponse getFailedUploadResponse() {
         return failedUploadResponse;
+    }
+    
+    private FailedUploadResponse transform(FailedUploadSetResponse failedUploadSetResponse) {
+    	FailedUploadResponse fur = new FailedUploadResponse(failedUploadSetResponse.getSuccess(), 
+    			failedUploadSetResponse.getMessage());
+    	return fur;
     }
 }

@@ -11,6 +11,7 @@
         "width" : 150,
         "height" : 150,
         "background" : "rgba(100, 100, 100, 1)",
-        "strategy" : "fill"
+        "strategy" : "fill",
+        "id": "not set"
     }
 }

@@ -19,6 +19,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 import io.kraken.client.model.Strategy;
 
 /**
@@ -39,13 +40,20 @@ import io.kraken.client.model.Strategy;
 public abstract class AbstractResize {
 
     private final Strategy strategy;
+    private final String id;
 
     @JsonCreator
-    protected AbstractResize(@JsonProperty("strategy") Strategy strategy) {
+    protected AbstractResize(@JsonProperty("strategy") Strategy strategy,
+            @JsonProperty("id") String id) {
         this.strategy = strategy;
+        this.id = id;
     }
 
     public Strategy getStrategy() {
         return strategy;
+    }
+    
+    public String getId() {
+    	return id;
     }
 }

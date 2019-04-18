@@ -35,8 +35,9 @@ public class FillResize extends AbstractDimensionBasedResize {
     @JsonCreator
     public FillResize(@JsonProperty("width") Integer width,
                       @JsonProperty("height") Integer height,
-                      @JsonProperty("background") RGBA background) {
-        super(Strategy.FILL, width, height);
+                      @JsonProperty("background") RGBA background,
+                      @JsonProperty("id") String id) {
+        super(Strategy.FILL, width, height, id);
         this.background = background;
     }
 

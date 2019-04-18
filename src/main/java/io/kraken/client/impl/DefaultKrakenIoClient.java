@@ -36,7 +36,9 @@ import io.kraken.client.model.request.ImageUrlUploadCallbackUrlSetRequest;
 import io.kraken.client.model.request.ImageUrlUploadRequest;
 import io.kraken.client.model.request.ImageUrlUploadSetRequest;
 import io.kraken.client.model.response.AbstractUploadResponse;
+import io.kraken.client.model.response.AbstractUploadSetResponse;
 import io.kraken.client.model.response.FailedUploadResponse;
+import io.kraken.client.model.response.FailedUploadSetResponse;
 import io.kraken.client.model.response.SuccessfulUploadCallbackUrlResponse;
 import io.kraken.client.model.response.SuccessfulUploadCallbackUrlSetResponse;
 import io.kraken.client.model.response.SuccessfulUploadResponse;
@@ -502,13 +504,14 @@ public class DefaultKrakenIoClient implements KrakenIoClient {
     
     // *** RESPONSE HANDLING *** //
     private SuccessfulUploadResponse handleResponse(HttpResponse response) {
+    	debugMsg("handleResponse", null);
         try {
         	ResponseBody responseBody = getContent(response);
         	if(responseBody.getCode() >= 300){
         		log.debug("Reason : "+responseBody.getReason());
         	}
         	String bodyAsString = responseBody.getBody();
-        	log.debug(bodyAsString);
+        	debugMsg("handleResponse", "Body : " + bodyAsString);
             final AbstractUploadResponse abstractUploadResponse = mapper.readValue(bodyAsString, AbstractUploadResponse.class);
             abstractUploadResponse.setStatus(response.getStatusLine().getStatusCode());
 
@@ -526,16 +529,18 @@ public class DefaultKrakenIoClient implements KrakenIoClient {
     }
     
     private SuccessfulUploadSetResponse handleSetResponse(HttpResponse response) {
+    	debugMsg("handleSetResponse", null);
         try {
         	ResponseBody responseBody = getContent(response);
         	String bodyAsString = responseBody.getBody();
-            final AbstractUploadResponse abstractUploadResponse = mapper.readValue(bodyAsString, AbstractUploadResponse.class);
+        	debugMsg("handleSetResponse", "Body : " + bodyAsString);
+            final AbstractUploadSetResponse abstractUploadResponse = mapper.readValue(bodyAsString, AbstractUploadSetResponse.class);
             abstractUploadResponse.setStatus(response.getStatusLine().getStatusCode());
 
             if (response.getStatusLine().getStatusCode() == 200) {
                 return (SuccessfulUploadSetResponse) abstractUploadResponse;
             } else {
-                throw new KrakenIoRequestException("Kraken.io request failed", (FailedUploadResponse) abstractUploadResponse);
+                throw new KrakenIoRequestException("Kraken.io request failed", (FailedUploadSetResponse) abstractUploadResponse);
             }
         } catch (KrakenIoRequestException e) {
             throw e;

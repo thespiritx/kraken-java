@@ -17,6 +17,7 @@ package io.kraken.client.model.resize;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import io.kraken.client.model.Strategy;
 
 /**
@@ -27,7 +28,8 @@ public class ExactResize extends AbstractDimensionBasedResize {
 
     @JsonCreator
     public ExactResize(@JsonProperty("width") Integer width,
-                       @JsonProperty("height") Integer height) {
-        super(Strategy.EXACT, width, height);
+                       @JsonProperty("height") Integer height,
+                       @JsonProperty("id") String id) {
+        super(Strategy.EXACT, width, height, id);
     }
 }

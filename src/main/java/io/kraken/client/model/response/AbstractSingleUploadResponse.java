@@ -13,33 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.kraken.client.model.resize;
+package io.kraken.client.model.response;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import io.kraken.client.model.Strategy;
-
-
+import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * @author Emir Dizdarevic
  * @since 1.0.0
  */
-public class LandscapeResize extends AbstractResize {
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = SetSingleUploadResponse.class, name = "true")
+})
+public abstract class AbstractSingleUploadResponse {
 
-    private final Integer width;
+    @JsonIgnore
+    protected final ObjectMapper objectMapper = new ObjectMapper();
+
+    @JsonIgnore
+    private Integer status;
 
     @JsonCreator
-    public LandscapeResize(@JsonProperty("width") Integer width,
-            @JsonProperty("id") String id) {
-        super(Strategy.LANDSCAPE, id);
-
-        //checkNotNull(width, "width must not be null");
-        this.width = width;
+    protected AbstractSingleUploadResponse() {
     }
 
-    public Integer getWidth() {
-        return width;
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 }

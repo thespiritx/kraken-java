@@ -17,6 +17,7 @@ package io.kraken.client.model.resize;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import io.kraken.client.model.Strategy;
 
 
@@ -30,8 +31,9 @@ public class PortraitResize extends AbstractResize {
     private final Integer height;
 
     @JsonCreator
-    public PortraitResize(@JsonProperty("height") Integer height) {
-        super(Strategy.PORTRAIT);
+    public PortraitResize(@JsonProperty("height") Integer height,
+            @JsonProperty("id") String id) {
+        super(Strategy.PORTRAIT, id);
 
         //checkNotNull(height, "height must not be null");
         this.height = height;

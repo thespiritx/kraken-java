@@ -24,10 +24,11 @@ import io.kraken.client.model.Strategy;
  * @since 1.0.0
  */
 public class AutoResize extends AbstractDimensionBasedResize {
-
+    
     @JsonCreator
     public AutoResize(@JsonProperty("width") Integer width,
-                      @JsonProperty("height") Integer height) {
-        super(Strategy.AUTO, width, height);
+                      @JsonProperty("height") Integer height,
+                      @JsonProperty("id") String id) {
+        super(Strategy.AUTO, width, height, id);
     }
 }

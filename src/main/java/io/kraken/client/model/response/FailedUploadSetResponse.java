@@ -15,42 +15,39 @@
  */
 package io.kraken.client.model.response;
 
-import java.util.Map;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 /**
- * @author Clinton LaForest
- * @since 1.1.2
+ * @author Emir Dizdarevic
+ * @since 1.0.0
  */
-public class SuccessfulUploadSetResponse extends AbstractUploadSetResponse {
-	
-	private final Map<String, SetSingleUploadResponse> results;
-	
-	@JsonCreator
-	public SuccessfulUploadSetResponse(@JsonProperty("results") Map<String, SetSingleUploadResponse> results,
-									   @JsonProperty("success") Boolean success){
-		super(success);
-		this.results = results;
-	}
-	
-	public Map<String, SetSingleUploadResponse> getResults(){
-		return results;
-	}
-	
-	@Override
+public class FailedUploadSetResponse extends AbstractUploadSetResponse {
+
+    private final String message;
+
+    @JsonCreator
+    public FailedUploadSetResponse(@JsonProperty("success") Boolean success,
+                                @JsonProperty("message") String message) {
+        super(success);
+        this.message = message;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    @Override
     public String toString() {
         try {
             return "AbstractUploadResponse:" + objectMapper.writeValueAsString(this);
         } catch (JsonProcessingException e) {
-            return "SuccessfulUploadSetResponse{" +
+            return "SuccessfulUploadResponse{" +
                     "success='" + getSuccess() + '\'' +
                     ", status='" + getStatus() + '\'' +
-                    ", results=" + getResults() + '\'' +
+                    ", status='" + getMessage() + '\'' +
                     '}';
         }
     }
-
 }

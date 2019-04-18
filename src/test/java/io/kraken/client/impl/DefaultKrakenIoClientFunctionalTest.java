@@ -82,7 +82,7 @@ public class DefaultKrakenIoClientFunctionalTest extends AbstractFunctionalTest 
 
     @Test
     public void testDirectUploadResize() throws Exception {
-        final FillResize fillResize = new FillResize(150, 150, new RGBA(100, 100, 100, BigDecimal.ONE));
+        final FillResize fillResize = new FillResize(150, 150, new RGBA(100, 100, 100, BigDecimal.ONE), "not set");
         final DirectUploadRequest directUploadRequest = DirectUploadRequest.builder(new ByteArrayInputStream(loadFileBinary("test.jpg"))).withResize(fillResize).build();
         internalTestDirectUpload(directUploadRequest, loadFileString("krakenIoRequestDirectResize.json"));
     }
@@ -148,7 +148,7 @@ public class DefaultKrakenIoClientFunctionalTest extends AbstractFunctionalTest 
 
     @Test
     public void testDirectFileUploadResize() throws Exception {
-        final FillResize fillResize = new FillResize(150, 150, new RGBA(100, 100, 100, BigDecimal.ONE));
+        final FillResize fillResize = new FillResize(150, 150, new RGBA(100, 100, 100, BigDecimal.ONE), "not set");
         final DirectFileUploadRequest directFileUploadRequest = DirectFileUploadRequest.builder(new File(getResource("test.jpg").getPath())).withResize(fillResize).build();
         internalTestDirectFileUpload(directFileUploadRequest, loadFileString("krakenIoRequestDirectResize.json"));
     }
@@ -211,7 +211,7 @@ public class DefaultKrakenIoClientFunctionalTest extends AbstractFunctionalTest 
 
     @Test
     public void testDirectUploadCallbackUrlResize() throws Exception {
-        final FillResize fillResize = new FillResize(150, 150, new RGBA(100, 100, 100, BigDecimal.ONE));
+        final FillResize fillResize = new FillResize(150, 150, new RGBA(100, 100, 100, BigDecimal.ONE), "not set");
         final DirectUploadCallbackUrlRequest directUploadCallbackUrlRequest = DirectUploadCallbackUrlRequest.builder(new ByteArrayInputStream(loadFileBinary("test.jpg")), new URL("http://somehost/somecallback")).withResize(fillResize).build();
         internalTestDirectUploadCallbackUrl(directUploadCallbackUrlRequest, loadFileString("krakenIoRequestDirectCallbackUrlResize.json"));
     }
@@ -268,7 +268,7 @@ public class DefaultKrakenIoClientFunctionalTest extends AbstractFunctionalTest 
     }
     @Test
     public void testImageUrlUploadResize() throws Exception {
-        final FillResize fillResize = new FillResize(150, 150, new RGBA(100, 100, 100, BigDecimal.ONE));
+        final FillResize fillResize = new FillResize(150, 150, new RGBA(100, 100, 100, BigDecimal.ONE), "not set");
         final ImageUrlUploadRequest imageUrlUploadRequest = ImageUrlUploadRequest.builder(new URL("http://somehost/image")).withResize(fillResize).build();
         internalTestImageUrlUpload(imageUrlUploadRequest, loadFileString("krakenIoRequestImageUrlResize.json"));
     }
@@ -317,7 +317,7 @@ public class DefaultKrakenIoClientFunctionalTest extends AbstractFunctionalTest 
 
     @Test
     public void testImageUrlUploadCallbackUrlResize() throws Exception {
-        final FillResize fillResize = new FillResize(150, 150, new RGBA(100, 100, 100, BigDecimal.ONE));
+        final FillResize fillResize = new FillResize(150, 150, new RGBA(100, 100, 100, BigDecimal.ONE), "not set");
         final ImageUrlUploadCallbackUrlRequest imageUrlUploadCallbackUrlRequest = ImageUrlUploadCallbackUrlRequest
                 .builder(new URL("http://somehost/image"), new URL("http://somehost/somecallback"))
                 .withResize(fillResize)

@@ -17,6 +17,7 @@ package io.kraken.client.model.resize;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import io.kraken.client.model.Strategy;
 
 
@@ -30,8 +31,9 @@ public class SquareResize extends AbstractResize {
     private final Integer size;
 
     @JsonCreator
-    public SquareResize(@JsonProperty("size") Integer size) {
-        super(Strategy.SQUARE);
+    public SquareResize(@JsonProperty("size") Integer size,
+            @JsonProperty("id") String id) {
+        super(Strategy.SQUARE, id);
 
         //checkNotNull(size, "size must not be null");
         this.size = size;

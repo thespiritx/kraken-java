@@ -29,12 +29,13 @@ public abstract class AbstractDimensionBasedResize extends AbstractResize {
 
     private final Integer width;
     private final Integer height;
-
+    
     @JsonCreator
     protected AbstractDimensionBasedResize(@JsonProperty("strategy") Strategy strategy,
                                            @JsonProperty("width") Integer width,
-                                           @JsonProperty("height") Integer height) {
-        super(strategy);
+                                           @JsonProperty("height") Integer height,
+                                           @JsonProperty("id") String id) {
+        super(strategy, id);
 
         //checkNotNull(width, "width must not be null");
         //checkNotNull(height, "height must not be null");

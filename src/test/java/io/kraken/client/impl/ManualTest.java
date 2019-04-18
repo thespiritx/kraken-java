@@ -42,7 +42,7 @@ public class ManualTest {
         final DirectFileUploadRequest directFileUploadRequest = DirectFileUploadRequest.builder(
                 new File(Resources.getResource(ManualTest.class, "test.jpg").toURI()))
                 .withLossy(true)
-                .withResize(new FillResize(150, 100, new RGBA(45, 45, 145, BigDecimal.ONE)))
+                .withResize(new FillResize(150, 100, new RGBA(45, 45, 145, BigDecimal.ONE), "not set"))
                 .build();
 
         final SuccessfulUploadResponse successfulUploadResponse = krakenIoClient.directUpload(directFileUploadRequest);
