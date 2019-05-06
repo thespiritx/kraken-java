@@ -26,10 +26,26 @@ import io.kraken.client.model.Strategy;
  */
 public class CropResize extends AbstractDimensionBasedResize {
 
+	private final String cropMode;
+	
     @JsonCreator
     public CropResize(@JsonProperty("width") Integer width,
                       @JsonProperty("height") Integer height,
                       @JsonProperty("id") String id) {
         super(Strategy.CROP, width, height, id);
+        this.cropMode = "c";
+    }
+    
+    @JsonCreator
+    public CropResize(@JsonProperty("width") Integer width,
+                      @JsonProperty("height") Integer height,
+                      @JsonProperty("id") String id,
+                      @JsonProperty("crop_mode") String cropMode) {
+        super(Strategy.CROP, width, height, id);
+        this.cropMode = cropMode;
+    }
+    
+    public String getCropMode() {
+    	return cropMode;
     }
 }
